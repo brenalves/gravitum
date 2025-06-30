@@ -1,0 +1,3 @@
+/home/breno/dev/gravitum/deps/glad/CMakeFiles/glad.dir
+/home/breno/dev/gravitum/deps/glad/CMakeFiles/edit_cache.dir
+/home/breno/dev/gravitum/deps/glad/CMakeFiles/rebuild_cache.dir
