@@ -14,6 +14,9 @@ public:
     void bind();
     void unbind();
 
+    inline uint32_t getCount() { return m_count; }
+
 private:
     uint32_t m_id;
+    uint32_t m_count;
 };
