@@ -10,6 +10,7 @@
 #include "VertexArray.h"
 #include "Camera.h"
 #include "Texture.h"
+#include "Light.h"
 
 int main()
 {
@@ -30,7 +31,9 @@ int main()
     }
 
     {
-        Shader shader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+        Shader basicShader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+        Shader phongShader("assets/shaders/phong.vert", "assets/shaders/phong.frag");
+        Shader lightShader("assets/shaders/light.vert", "assets/shaders/light.frag");
 
         BufferLayout layout;
         layout.push<float>(3, false);
@@ -120,10 +123,18 @@ int main()
         Camera camera;
         Transform cubeTransform;
         Transform quadTransform;
+        Transform lightTransform;
+        Light light;
 
-        camera.transform.position.z = 10.0f;
-        quadTransform.position.y = -3.0f;
+        camera.transform.position.y = 2.0f;
+        camera.transform.position.z = 8.0f;
+        camera.transform.rotation.y = -15.0f;
+
+        quadTransform.position.y = -2.0f;
         quadTransform.rotation.x = 90.0f;
+
+        lightTransform.position.y = 1.0f;
+        lightTransform.scale *= 0.2f;
 
         // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glEnable(GL_DEPTH_TEST);
@@ -137,31 +148,57 @@ int main()
             camera.update();
             cubeTransform.update();
             quadTransform.update();
+            lightTransform.update();
 
             cubeTransform.rotation.x += 1.0f;
             cubeTransform.rotation.y += 0.75f;
 
             cubeTransform.position.x = sin(glfwGetTime());
             cubeTransform.position.y = cos(glfwGetTime());
+
+            lightTransform.position.x = sin(glfwGetTime()) * 5.0;
+            lightTransform.position.z = cos(glfwGetTime()) * 5.0f;
     
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            
 
-            shader.bind();
-            shader.setUniformMatrix4f("uProjectionMatrix", glm::value_ptr(camera.projectionMatrix));
-            shader.setUniformMatrix4f("uViewMatrix", glm::value_ptr(camera.viewMatrix));
+            basicShader.bind();
+            basicShader.setUniformMatrix4f("uProjectionMatrix", glm::value_ptr(camera.projectionMatrix));
+            basicShader.setUniformMatrix4f("uViewMatrix", glm::value_ptr(camera.viewMatrix));
+            phongShader.bind();
+            phongShader.setUniformMatrix4f("uProjectionMatrix", glm::value_ptr(camera.projectionMatrix));
+            phongShader.setUniformMatrix4f("uViewMatrix", glm::value_ptr(camera.viewMatrix));
+            lightShader.bind();
+            lightShader.setUniformMatrix4f("uProjectionMatrix", glm::value_ptr(camera.projectionMatrix));
+            lightShader.setUniformMatrix4f("uViewMatrix", glm::value_ptr(camera.viewMatrix));
+
+            phongShader.bind();
+            phongShader.setUniform3f("vViewPos", glm::value_ptr(camera.transform.position));
+            phongShader.setUniform3f("uLight.position", glm::value_ptr(lightTransform.position));
+            phongShader.setUniform3f("uLight.ambient", glm::value_ptr(light.ambient));
+            phongShader.setUniform3f("uLight.diffuse", glm::value_ptr(light.diffuse));
+            phongShader.setUniform3f("uLight.specular", glm::value_ptr(light.specular));
+            phongShader.setUniform1f("uLight.constant", light.constant);
+            phongShader.setUniform1f("uLight.linear", light.linear);
+            phongShader.setUniform1f("uLight.quadratic", light.quadratic);
             
-            shader.bind();
-            shader.setUniformMatrix4f("uWorldMatrix", glm::value_ptr(cubeTransform.worldMatrix));
+            phongShader.bind();
+            phongShader.setUniformMatrix4f("uWorldMatrix", glm::value_ptr(cubeTransform.worldMatrix));
             cubeTexture.bind();
-            shader.setUniform1i("uTexture", 0);
+            phongShader.setUniform1i("uTexture", 0);
             cubeVA.bind();
             cubeIB.bind();
             glDrawElements(GL_TRIANGLES, cubeIB.getCount(), GL_UNSIGNED_INT, nullptr);
 
-            shader.bind();
-            shader.setUniformMatrix4f("uWorldMatrix", glm::value_ptr(quadTransform.worldMatrix));
+            lightShader.bind();
+            lightShader.setUniformMatrix4f("uWorldMatrix", glm::value_ptr(lightTransform.worldMatrix));
+            cubeVA.bind();
+            cubeIB.bind();
+            glDrawElements(GL_TRIANGLES, cubeIB.getCount(), GL_UNSIGNED_INT, nullptr);
+
+            phongShader.bind();
+            phongShader.setUniformMatrix4f("uWorldMatrix", glm::value_ptr(quadTransform.worldMatrix));
             quadTexture.bind();
-            shader.setUniform1i("uTexture", 0);
+            phongShader.setUniform1i("uTexture", 0);
             quadVA.bind();
             quadIB.bind();
             glDrawElements(GL_TRIANGLES, quadIB.getCount(), GL_UNSIGNED_INT, nullptr);
