@@ -1,0 +1,3 @@
+/home/breno/dev/gravitum/deps/stb_image/CMakeFiles/stb_image.dir
+/home/breno/dev/gravitum/deps/stb_image/CMakeFiles/edit_cache.dir
+/home/breno/dev/gravitum/deps/stb_image/CMakeFiles/rebuild_cache.dir
