@@ -3,6 +3,10 @@ cmake_policy(SET CMP0072 NEW)
 
 project(gravitum)
 
+add_subdirectory(deps/glfw)
+add_subdirectory(deps/glad)
+add_subdirectory(deps/stb_image)
+
 add_executable(gravitum
     src/main.cpp
     src/Window.cpp

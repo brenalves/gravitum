@@ -7,5 +7,5 @@ add_library(glad
 )
 
 target_include_directories(glad PUBLIC
-    ${CMAKE_SOURCE_DIR}/include/
+    include/
 )

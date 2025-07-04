@@ -1,3 +1,0 @@
-/home/aluno/dev/gravitum/build/CMakeFiles/gravitum.dir
-/home/aluno/dev/gravitum/build/CMakeFiles/edit_cache.dir
-/home/aluno/dev/gravitum/build/CMakeFiles/rebuild_cache.dir

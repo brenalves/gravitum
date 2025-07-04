@@ -7,5 +7,5 @@ add_library(stb_image
 )
 
 target_include_directories(stb_image PUBLIC
-    ${CMAKE_SOURCE_DIR}/include
+    include
 )

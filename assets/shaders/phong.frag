@@ -30,12 +30,12 @@ void main()
     vec3 lightDir = normalize(uLight.position - vFragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = uLight.diffuse * diff * texture(uTexture, vTexCoord).rgb;
-        
+    
     vec3 viewDir = normalize(uViewPos - vFragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
     vec3 specular = uLight.specular * spec * texture(uTexture, vTexCoord).rgb;
-    
+
     if(diff == 0)
         specular = vec3(0.0, 0.0, 0.0);
 
